@@ -7,9 +7,6 @@ from lightgbm import LGBMRegressor
 
 import semi_supervised_learning
 
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 
 def preprocess(df_train_labeled, df_train_unlabeled, df_test, y_train_labeled):
     epsilon = 1e-3
@@ -102,11 +99,6 @@ def main(name):
     rmse_train_single = np.sqrt(mean_squared_error(y_train_labeled, y_train_pred_single))
     rmse_test_single = np.sqrt(mean_squared_error(y_test, y_pred))
 
-
-
-
-
-
     lgbm.fit(X_train, y_train)
     y_train_pred = lgbm.predict(X_train_labeled)
     y_pred = lgbm.predict(X_test)
@@ -134,8 +126,6 @@ def main(name):
     print(f'SSL RMSE Test: {rmse_test_ssl}')
 
     ssl.print_params()
-
-    dummy = -32
 
 
 if __name__ == '__main__':
