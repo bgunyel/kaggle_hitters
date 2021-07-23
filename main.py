@@ -95,6 +95,18 @@ def main(name):
     lgbm = LGBMRegressor(boosting_type='dart', num_leaves=32, learning_rate=0.1, n_estimators=90, colsample_bytree=0.5,
                          max_depth=7)
 
+    lgbm.fit(X_train_labeled, y_train_labeled)
+    y_train_pred_single = lgbm.predict(X_train_labeled)
+    y_pred = lgbm.predict(X_test)
+
+    rmse_train_single = np.sqrt(mean_squared_error(y_train_labeled, y_train_pred_single))
+    rmse_test_single = np.sqrt(mean_squared_error(y_test, y_pred))
+
+
+
+
+
+
     lgbm.fit(X_train, y_train)
     y_train_pred = lgbm.predict(X_train_labeled)
     y_pred = lgbm.predict(X_test)
@@ -102,11 +114,26 @@ def main(name):
     rmse_train = np.sqrt(mean_squared_error(y_train_labeled, y_train_pred))
     rmse_test = np.sqrt(mean_squared_error(y_test, y_pred))
 
-    ssl = semi_supervised_learning.SSL(n_learners=3)
-    ssl.fit(X_train_labeled=X_train_labeled, y_train_labeled=y_train_labeled, X_train_unlabeled=X_train_unlabeled)
+    print('Control Point - 1')
 
-    print(f'RMSE Train: {rmse_train}')
-    print(f'RMSE Test: {rmse_test}')
+    ssl = semi_supervised_learning.SSL(n_learners=10)
+    ssl.fit(X_train_labeled=X_train_labeled, y_train_labeled=y_train_labeled, X_train_unlabeled=X_train_unlabeled)
+    y_train_pred_ssl = ssl.predict(X_train_labeled)
+    y_pred_ssl = ssl.predict(X_test)
+
+    rmse_train_ssl = np.sqrt(mean_squared_error(y_train_labeled, y_train_pred_ssl))
+    rmse_test_ssl = np.sqrt(mean_squared_error(y_test, y_pred_ssl))
+
+    print(f'LGBM SINGLE RMSE Train: {rmse_train_single}')
+    print(f'LGBM SINGLE RMSE Test: {rmse_test_single}')
+
+    print(f'LGBM RMSE Train: {rmse_train}')
+    print(f'LGBM RMSE Test: {rmse_test}')
+
+    print(f'SSL RMSE Train: {rmse_train_ssl}')
+    print(f'SSL RMSE Test: {rmse_test_ssl}')
+
+    ssl.print_params()
 
     dummy = -32
 
